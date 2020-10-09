@@ -4,6 +4,7 @@ public class RunController {
 	private UI view;
 	private Board board;
 	private RuleEngine rule;
+	boolean running = false;
 	public RunController() {
 		
 	}
@@ -14,12 +15,29 @@ public class RunController {
 	
 	public void pieceBtnClicked(int x, int y) {
 		System.out.println(x+ " ... "+y);
-		this.rule.updateTurn();
-		
-		
-		
-		this.view.setPlayerTurnText("Player "+this.rule.getTurn()+" turn");
-		this.view.invalidateFrame();
+		if(!this.board.hasPiece(x, y) && this.running) {
+			this.board.setPiece(x, y, board.getCurrentPlayer().getPiece());
+			this.view.addPiece(x, y, board.getCurrentPlayer());		
+			this.view.setPlayerTurnText("Player "+this.rule.getTurn()+" turn");
+			
+			//check normal and inverse
+			System.out.println(this.rule.getRule());
+			if(this.rule.getRule() == RuleEngine.Rule.NORMAL){
+				if(this.rule.checkNormal(this.board) != null) {
+					this.running = false;
+					this.view.setPlayerTurnText("Player "+this.rule.getTurn() +" Won");
+				}
+			}else if(this.rule.getRule() == RuleEngine.Rule.INVERSE) {
+				if(this.rule.checkInverse(this.board) != null) {
+					this.running = false;
+					this.view.setPlayerTurnText("Player "+(this.board.getPlayerPosition(this.rule.checkInverse(board))+1)+" Lost and other(s) won");
+				}
+			}
+			
+			
+			this.rule.updateTurn();
+			this.view.invalidateFrame();
+		}
 	}
 	
 	public void startBtnClicked() {
@@ -69,8 +87,9 @@ public class RunController {
 				startBoard = false;
 			}
 			if(startBoard){
-				this.board = new Board(Integer.valueOf(boardSize),Integer.valueOf(playerSize));
-				this.rule = new RuleEngine(RuleEngine.Rule.NORMAL, Integer.valueOf(playerSize));
+				running = true;
+				this.rule = new RuleEngine(Integer.valueOf(gameMode), Integer.valueOf(playerSize));
+				this.board = new Board(Integer.valueOf(boardSize),Integer.valueOf(playerSize), this.rule);
 				this.view.setPlayerTurnText("Player 1 turn");
 				this.view.loadBoard(board.getSize());
 				this.view.invalidateFrame();

@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 
 public class UI {
 	
-	RunController controll;
+	private RunController controll;
 	
 	private JFrame frame;
 	private JPanel mainGridLayoutPanel;
@@ -99,7 +99,7 @@ public class UI {
 		
 		this.displayTextGridLayout = new JPanel();
 		this.textPlayerTurn = new JLabel("");
-		this.textModeDescription = new JLabel("Mode: 1 = Normal, 2 = Inverse");
+		this.textModeDescription = new JLabel("Mode: 0 = Normal, 1 = Inverse");
 		
 		this.textPlayerTurn.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.textModeDescription.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -162,6 +162,7 @@ public class UI {
 	public void addPiece(int x, int y, Player player) {
 		this.gameBtn[x][y].setText(String.valueOf(player.getPiece()));;
 	}
+
 	public void loadBoard(int size) {
 		this.gameGridLayout.setLayout(new GridLayout(size,size));
 		this.gameBtn = new JButton[size][size];
